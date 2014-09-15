@@ -1,0 +1,15 @@
+<div class="show">
+  <a href="{{data.recorditURL}}" class="gif_link" target="blank">
+    <img src="{{data.gifURL}}" />
+  </a>
+  <br><br>
+  Links:
+  <a href="{{data.gifURL}}" class="btn link" target="blank"></a>
+  <a href="{{data.recorditURL}}" class="btn link" target="blank"></a>
+  <br><br>
+  Markdown: 
+  <button class="btn copy copy_link">+ Link</button>
+  <button class="btn copy copy_embed">+ GIF</button>
+  <button class="btn copy copy_linked_embed">+ Linked GIF</button>
+
+</div>
