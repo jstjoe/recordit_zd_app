@@ -23,25 +23,30 @@
       }
     },
 
-    load: function() {
+    load: function(error) {
+      if(this.launchURI && !error) {
+        this.switchTo('link', { uri: this.launchURI });
+      }
       var user = encodeURIComponent(this.currentUser().email()),
         ticketID = this.ticket().id(),
         account = this.currentAccount().subdomain();
       this.ajax('getLink', user, account, ticketID).done(function(response) {
-        console.log(response);
-        this.switchTo('link', { uri: response.uri });
+        this.launchURI = response.uri;
+        this.switchTo('link', { uri: this.launchURI });
+        // console.log(response);
       });
     },
     launched: function() {
+      // TODO: IF hide on launch setting true
       services.appsTray().hide();
     },
     showRecording: function(data) {
-      if(data.ticketID == this.ticket().id()) {
+      if(data.ticketID == this.ticket().id() ) {
         services.appsTray().show();
         this.recorditURL = data.recorditURL;
         this.gifURL = data.gifURL;
 
-        var growl = helpers.fmt('Received Recording! <a href="%@">GIF</a>', this.gifURL);
+        var growl = helpers.fmt('Received <a href="%@" target="blank">recording</a> on ticket #%@.', this.recorditURL, data.ticketID);  //<a href="#/tickets/%@">ticket #%@</a>
         services.notify(growl);
         console.log(data);
         this.switchTo('show', {
