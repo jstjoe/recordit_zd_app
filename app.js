@@ -7,33 +7,39 @@
       'click .generate_link':'load',
       'click .recordit_link':'launched',
       'notification.screencastDone':'showRecording',
+      'notification.loginDone':'loginDone',
       'click .copy_link':'copyLink',
       'click .copy_embed':'copyEmbed',
       'click .copy_linked_embed':'copyLinkedEmbed'
     },
 
     requests: {
-      getLink: function(user, account, ticketID) {
+      getLink: function(user_email, user_id, subdomain, ticket_id, token, role) {
         return {
-          url: helpers.fmt('http://zen-recordit.herokuapp.com/recordituri?user=%@&account=%@&ticket_id=%@&role=agent', user, account, ticketID),
+          url: helpers.fmt('http://zen-recordit.herokuapp.com/recordituri?user_email=%@&user_id=%@&role=%@&subdomain=%@&ticket_id=%@&token=%@', user_email, user_id, role, subdomain, ticket_id, token),
           dataType: 'JSON',
           type: 'GET',
           proxy_v2: true
         };
       }
     },
+    loginDone: function(data) {
+      console.log("Token updated");
+      this.store('recordit', data.token);
+    },
 
-    load: function(error) {
-      if(this.launchURI && !error) {
-        this.switchTo('link', { uri: this.launchURI });
-      }
-      var user = encodeURIComponent(this.currentUser().email()),
-        ticketID = this.ticket().id(),
-        account = this.currentAccount().subdomain();
-      this.ajax('getLink', user, account, ticketID).done(function(response) {
+    load: function(e) {
+      if(e) {e.preventDefault();}
+      var user_email = encodeURIComponent(this.currentUser().email()),
+        user_id = this.currentUser().id(),
+        ticket_id = this.ticket().id(),
+        subdomain = this.currentAccount().subdomain(),
+        role = 'agent', // TODO set this based on a Select
+        token = this.store('recordit');
+      this.ajax('getLink', user_email, user_id, subdomain, ticket_id, token, role)
+      .done(function(response) {
         this.launchURI = response.uri;
         this.switchTo('link', { uri: this.launchURI });
-        // console.log(response);
       });
     },
     launched: function() {
@@ -53,7 +59,6 @@
           data: data
         });
       } else {
-        console.log('Notification not for this ticket.');
         console.log(data);
       }
     },

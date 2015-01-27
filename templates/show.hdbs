@@ -1,4 +1,4 @@
-<div class="show" data-main>
+
   <a href="{{data.recorditURL}}" class="linked_image" target="blank">
     <img src="{{data.gifURL}}">
   </a>
@@ -11,5 +11,3 @@
   <button class="btn copy copy_link"><i class="icon-plus"></i> Link</button>
   <button class="btn copy copy_embed"><i class="icon-plus"></i> GIF</button>
   <button class="btn copy copy_linked_embed"><i class="icon-plus"></i> Linked GIF</button>
-
-</div>
